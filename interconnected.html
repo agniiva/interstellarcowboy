@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Interconnected Self</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+        }
+        #canvas {
+            border: 1px solid #000;
+            background-color: #fff;
+        }
+        #controls {
+            margin-top: 20px;
+        }
+        button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #info {
+            margin-top: 20px;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Interconnected Self</h1>
+        <canvas id="canvas" width="600" height="400"></canvas>
+        <div id="controls">
+            <button id="brainBtn">Brain Activity</button>
+            <button id="quantumBtn">Quantum Entanglement</button>
+            <button id="ecosystemBtn">Ecosystem</button>
+        </div>
+        <div id="info"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const brainBtn = document.getElementById('brainBtn');
+        const quantumBtn = document.getElementById('quantumBtn');
+        const ecosystemBtn = document.getElementById('ecosystemBtn');
+        const info = document.getElementById('info');
+
+        let particles = [];
+        let connections = [];
+        let mode = 'brain';
+
+        function createParticles(num) {
+            particles = [];
+            for (let i = 0; i < num; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: 3,
+                    vx: Math.random() * 2 - 1,
+                    vy: Math.random() * 2 - 1
+                });
+            }
+        }
+
+        function createConnections() {
+            connections = [];
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    if (Math.random() > 0.85) {
+                        connections.push([i, j]);
+                    }
+                }
+            }
+        }
+
+        function updateParticles() {
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            });
+        }
+
+        function drawParticles() {
+            ctx.fillStyle = '#000';
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function drawConnections() {
+            ctx.strokeStyle = mode === 'quantum' ? '#00f' : '#999';
+            connections.forEach(([i, j]) => {
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateParticles();
+            drawConnections();
+            drawParticles();
+            requestAnimationFrame(animate);
+        }
+
+        function setMode(newMode) {
+            mode = newMode;
+            switch (mode) {
+                case 'brain':
+                    createParticles(100);
+                    createConnections();
+                    info.innerHTML = "This visualization represents neural activity in the brain. Each dot is a neuron, and the lines represent synaptic connections. The constant movement and interconnectedness illustrate how our sense of self emerges from the dynamic interplay of billions of neurons.";
+                    break;
+                case 'quantum':
+                    createParticles(2);
+                    connections = [[0, 1]];
+                    info.innerHTML = "Here we see quantum entanglement. The two particles remain connected regardless of distance, illustrating the profound interconnectedness at the quantum level. This challenges our notion of separateness at the most fundamental level of reality.";
+                    break;
+                case 'ecosystem':
+                    createParticles(50);
+                    createConnections();
+                    info.innerHTML = "This represents an ecosystem. Each dot could be a different species, and the lines show their interactions. The complex web of connections demonstrates how every part of an ecosystem is interconnected, much like our relationship with the world around us.";
+                    break;
+            }
+        }
+
+        brainBtn.addEventListener('click', () => setMode('brain'));
+        quantumBtn.addEventListener('click', () => setMode('quantum'));
+        ecosystemBtn.addEventListener('click', () => setMode('ecosystem'));
+
+        setMode('brain');
+        animate();
+    </script>
+</body>
+</html>
